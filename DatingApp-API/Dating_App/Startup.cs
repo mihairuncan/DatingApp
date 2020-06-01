@@ -1,4 +1,5 @@
-﻿using Dating_App.Data;
+﻿using AutoMapper;
+using Dating_App.Data;
 using Dating_App.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Dating_App
 {
@@ -29,8 +31,15 @@ namespace Dating_App
         {
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
+               //.AddJsonOptions(opt =>
+               //{
+               //    opt.SerializerSettings.ReferenceLoopHandling =
+               //     Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+               //});
             services.AddCors();
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
