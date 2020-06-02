@@ -48,8 +48,8 @@ export class MemberDetailComponent implements OnInit {
         big: photo.url,
         description: photo.description,
       });
-      return imageUrls;
     }
+    return imageUrls;
   }
   // loadUser() {
   //   this.userService.getUser(+this.route.snapshot.params.id).subscribe((user: User) => {

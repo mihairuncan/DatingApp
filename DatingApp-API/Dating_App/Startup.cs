@@ -13,7 +13,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace Dating_App
 {
@@ -37,6 +36,7 @@ namespace Dating_App
                //     Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                //});
             services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper(typeof(DatingRepository).Assembly);
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
