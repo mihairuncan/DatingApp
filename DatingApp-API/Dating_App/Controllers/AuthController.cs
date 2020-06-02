@@ -1,4 +1,5 @@
-﻿using Dating_App.Data;
+﻿using AutoMapper;
+using Dating_App.Data;
 using Dating_App.Dtos;
 using Dating_App.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,17 +17,19 @@ namespace Dating_App.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IConfiguration _config;
         private readonly IAuthRepository _repo;
 
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
+            _mapper = mapper;
             _config = config;
             _repo = repo;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register (UserForRegisterDto userForRegisterDto)
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
@@ -50,7 +53,7 @@ namespace Dating_App.Controllers
         {
             var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
 
-            if(userFromRepo == null)
+            if (userFromRepo == null)
             {
                 return Unauthorized();
             }
@@ -77,9 +80,12 @@ namespace Dating_App.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
+            var user = _mapper.Map<UserForListDto>(userFromRepo);
+
             return Ok(new
             {
-                token = tokenHandler.WriteToken(token)
+                token = tokenHandler.WriteToken(token),
+                user
             });
         }
 
