@@ -1,4 +1,5 @@
-﻿using Dating_App.Models;
+﻿using Dating_App.Helpers;
+using Dating_App.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +45,11 @@ namespace Dating_App.Data
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<PagedList<User>> GetUsers(UserParams userParams)
         {
-            var users = await _context.Users.Include(u => u.Photos).ToListAsync();
+            var users = _context.Users.Include(u => u.Photos);
 
-            return users;
+            return await PagedList<User>.CreateAsync(users,userParams.PageNumber,userParams.PageSize);
         }
 
         public async Task<bool> SaveAll()
