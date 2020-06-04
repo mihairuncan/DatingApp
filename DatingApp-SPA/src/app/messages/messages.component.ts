@@ -5,6 +5,7 @@ import { UserService } from '../_services/user.service';
 import { AuthService } from '../_services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../_services/alertify.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-messages',
@@ -36,12 +37,13 @@ export class MessagesComponent implements OnInit {
       this.authService.decodedToken.nameid,
       this.pagination.currentPage,
       this.pagination.itemsPerPage,
-      this.messageContainer).subscribe((res: PaginatedResult<Message[]>) => {
-        this.messages = res.result;
-        this.pagination = res.pagination;
-      }, error => {
-        this.alertify.error(error);
-      });
+      this.messageContainer)
+      .subscribe((res: PaginatedResult<Message[]>) => {
+          this.messages = res.result;
+          this.pagination = res.pagination;
+        }, error => {
+          this.alertify.error(error);
+        });
   }
 
   deleteMessage(id: number) {
