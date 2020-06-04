@@ -1,8 +1,7 @@
 ﻿using Dating_App.Helpers;
 using Dating_App.Models;
-using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Dating_App.Data
@@ -17,5 +16,8 @@ namespace Dating_App.Data
         Task<Photo> GetPhoto(int id);
         Task<Photo> GetMainPhotoForUser(int userId);
         Task<Like> GetLike(int userId, int recipientId);
+        Task<Message> GetMessage(int id);
+        Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams);
+        Task<IEnumerable<Message>> GetMessageThread(int usedId, int recipientId);
     }
 }

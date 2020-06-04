@@ -29,12 +29,10 @@ namespace Dating_App
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddControllers();
-               //.AddJsonOptions(opt =>
-               //{
-               //    opt.SerializerSettings.ReferenceLoopHandling =
-               //     Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-               //});
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddCors();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper(typeof(DatingRepository).Assembly);
