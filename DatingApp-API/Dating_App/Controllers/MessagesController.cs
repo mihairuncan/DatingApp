@@ -29,8 +29,8 @@ namespace Dating_App.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}", Name ="GetMessage")]
-        public async Task<IActionResult> GetMessage(int userId,int id)
+        [HttpGet("{id}", Name = "GetMessage")]
+        public async Task<IActionResult> GetMessage(int userId, int id)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             {
@@ -39,7 +39,7 @@ namespace Dating_App.Controllers
 
             var messageFromRepo = await _repo.GetMessage(id);
 
-            if(messageFromRepo == null)
+            if (messageFromRepo == null)
             {
                 return NotFound();
             }
@@ -68,6 +68,22 @@ namespace Dating_App.Controllers
             return Ok(messages);
         }
 
+        [HttpGet("thread/{recipientId}")]
+        public async Task<IActionResult> GetMessageThread(int userId, int recipientId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Unauthorized();
+            }
+
+            var messagesFromRepo = await _repo.GetMessageThread(userId, recipientId);
+
+            var messageThread = _mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
+
+            return Ok(messageThread);
+        }
+
+
 
         [HttpPost]
         public async Task<IActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto)
@@ -81,9 +97,9 @@ namespace Dating_App.Controllers
 
             var recipient = await _repo.GetUser(messageForCreationDto.RecipientId);
 
-            if(recipient == null)
+            if (recipient == null)
             {
-               return BadRequest("Could not find user");
+                return BadRequest("Could not find user");
             }
 
             var message = _mapper.Map<Message>(messageForCreationDto);
@@ -92,9 +108,9 @@ namespace Dating_App.Controllers
 
             var messageToReturn = _mapper.Map<MessageForCreationDto>(message);
 
-            if(await _repo.SaveAll())
+            if (await _repo.SaveAll())
             {
-                return CreatedAtRoute("GetMessage", new {userId, id = message.Id }, messageToReturn);
+                return CreatedAtRoute("GetMessage", new { userId, id = message.Id }, messageToReturn);
             }
 
             throw new Exception("Creating the message failed on save");
