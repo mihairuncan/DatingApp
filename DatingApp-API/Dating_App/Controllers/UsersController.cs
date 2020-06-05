@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 namespace Dating_App.Controllers
 {
     [ServiceFilter(typeof(LogUserActivity))]
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
