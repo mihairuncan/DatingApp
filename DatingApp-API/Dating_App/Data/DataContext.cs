@@ -60,6 +60,8 @@ namespace Dating_App.Data
                 .WithMany(u => u.MessagesReceived)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Photo>().HasQueryFilter(p => p.IsApproved);
+
         }
 
     }

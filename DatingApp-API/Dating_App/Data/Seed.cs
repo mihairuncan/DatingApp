@@ -32,6 +32,7 @@ namespace Dating_App.Data
 
                 users.ForEach(user =>
                 {
+                    user.Photos.SingleOrDefault().IsApproved = true;
                     userManager.CreateAsync(user, "password").Wait();
                     userManager.AddToRoleAsync(user, "Member").Wait();
                 });
