@@ -7,11 +7,11 @@ using Dating_App.Data;
 using Dating_App.Dtos;
 using Dating_App.Helpers;
 using Dating_App.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dating_App.Controllers
 {
+    [Produces("application/json")]
     [ServiceFilter(typeof(LogUserActivity))]
     [Route("api/users/{userId}/[controller]")]
     [ApiController]
@@ -26,6 +26,12 @@ namespace Dating_App.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Returns a message, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <param name="id">The id of the message</param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "GetMessage")]
         public async Task<IActionResult> GetMessage(int userId, int id)
         {
@@ -44,6 +50,12 @@ namespace Dating_App.Controllers
             return Ok(messageFromRepo);
         }
 
+        /// <summary>
+        /// Returns messages for a user, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userId">The id of the user.</param>
+        /// <param name="messageParams">Filters for retrieving messages</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetMessagesForUser(int userId,
                [FromQuery] MessageParams messageParams)
@@ -65,6 +77,12 @@ namespace Dating_App.Controllers
             return Ok(messages);
         }
 
+        /// <summary>
+        /// Returns a message thread between 2 users, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userId">The id of the user who requests the message thread</param>
+        /// <param name="recipientId">The id of the other user</param>
+        /// <returns></returns>
         [HttpGet("thread/{recipientId}")]
         public async Task<IActionResult> GetMessageThread(int userId, int recipientId)
         {
@@ -81,7 +99,12 @@ namespace Dating_App.Controllers
         }
 
 
-
+        /// <summary>
+        /// Creates a message, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userId">The id of the user who sends a message</param>
+        /// <param name="messageForCreationDto">The message</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto)
         {
@@ -116,6 +139,12 @@ namespace Dating_App.Controllers
 
         }
 
+        /// <summary>
+        /// Deletes a message, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="id">The id of the message to delete</param>
+        /// <param name="userId">The id of the user who requested the message deletion</param>
+        /// <returns></returns>
         [HttpPost("{id}")]
         public async Task<IActionResult> DeleteMessage(int id, int userId)
         {
@@ -148,6 +177,12 @@ namespace Dating_App.Controllers
             throw new Exception("Error deleting the message");
         }
 
+        /// <summary>
+        /// Marks a message as read, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userId">The id of the user who created the request</param>
+        /// <param name="id">The id of the message to be marked as read</param>
+        /// <returns></returns>
         [HttpPost("{id}/read")]
         public async Task<IActionResult> MarkMessageAsRead(int userId, int id)
         {

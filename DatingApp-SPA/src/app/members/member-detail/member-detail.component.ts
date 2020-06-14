@@ -60,13 +60,6 @@ export class MemberDetailComponent implements OnInit {
     }
     return imageUrls;
   }
-  // loadUser() {
-  //   this.userService.getUser(+this.route.snapshot.params.id).subscribe((user: User) => {
-  //     this.user = user;
-  //   }, err => {
-  //     this.alertify.error(err);
-  //   });
-  // }
 
   sendLike(id: number) {
     this.userService.sendLike(this.authService.decodedToken.nameid, id).subscribe(date => {

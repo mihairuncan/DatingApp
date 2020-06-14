@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace Dating_App.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -38,6 +39,10 @@ namespace Dating_App.Controllers
             _cloudinary = new Cloudinary(acc);
         }
 
+        /// <summary>
+        /// Return a list of users and their roles, request must be made by an admin.
+        /// </summary>
+        /// <returns></returns>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("usersWithRoles")]
         public async Task<IActionResult> GetUsersWithRoles()
@@ -58,6 +63,36 @@ namespace Dating_App.Controllers
             return Ok(userList);
         }
 
+        /// <summary>
+        /// Return a list of photos which are waiting for approval, request must be made by an admin or moderator.
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Policy = "ModeratePhotoRole")]
+        [HttpGet("photosForModeration")]
+        public async Task<IActionResult> GetPhotosForModeration()
+        {
+            var photos = await _context.Photos
+                                        .Include(u => u.User)
+                                        .IgnoreQueryFilters()
+                                        .Where(p => p.IsApproved == false)
+                                        .Select(p => new
+                                        {
+                                            Id = p.Id,
+                                            UserName = p.User.UserName,
+                                            Url = p.Url,
+                                            IsApproved = p.IsApproved
+                                        })
+                                        .ToListAsync();
+
+            return Ok(photos);
+        }
+
+        /// <summary>
+        /// Update a user's roles, request must be made by an admin.
+        /// </summary>
+        /// <param name="userName">The username whos roles will be updated</param>
+        /// <param name="roleEditDto">The list of roles</param>
+        /// <returns></returns>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("editRoles/{userName}")]
         public async Task<IActionResult> EditRoles(string userName, RoleEditDto roleEditDto)
@@ -88,26 +123,11 @@ namespace Dating_App.Controllers
 
         }
 
-        [Authorize(Policy = "ModeratePhotoRole")]
-        [HttpGet("photosForModeration")]
-        public async Task<IActionResult> GetPhotosForModeration()
-        {
-            var photos = await _context.Photos
-                                        .Include(u => u.User)
-                                        .IgnoreQueryFilters()
-                                        .Where(p => p.IsApproved == false)
-                                        .Select(p => new
-                                        {
-                                            Id = p.Id,
-                                            UserName = p.User.UserName,
-                                            Url = p.Url,
-                                            IsApproved = p.IsApproved
-                                        })
-                                        .ToListAsync();
-
-            return Ok(photos);
-        }
-
+        /// <summary>
+        /// Approve a photo, request must be made by an admin or moderator.
+        /// </summary>
+        /// <param name="photoId">The id of the photo to approve</param>
+        /// <returns></returns>
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpPost("approvePhoto/{photoId}")]
         public async Task<IActionResult> ApprovePhoto(int photoId)
@@ -122,6 +142,11 @@ namespace Dating_App.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Reject a photo, request must be made by an admin or moderator.
+        /// </summary>
+        /// <param name="photoId"></param>
+        /// <returns></returns>
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpPost("rejectPhoto/{photoId}")]
         public async Task<IActionResult> RejectPhoto(int photoId)

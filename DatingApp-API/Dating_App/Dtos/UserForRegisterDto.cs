@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Dating_App.Dtos
@@ -29,7 +30,11 @@ namespace Dating_App.Dtos
 
         [Required]
         public string Country { get; set; }
+        
+        [JsonIgnore]
         public DateTime Created { get; set; }
+
+        [JsonIgnore]
         public DateTime LastActive { get; set; }
 
         public UserForRegisterDto()

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Dating_App.Data;
 using Dating_App.Dtos;
 using Dating_App.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace Dating_App.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     [AllowAnonymous]
@@ -35,6 +35,11 @@ namespace Dating_App.Controllers
             _config = config;
         }
 
+        /// <summary>
+        /// Register a new user.
+        /// </summary>
+        /// <param name="userForRegisterDto"></param>
+        /// <returns></returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
@@ -51,6 +56,11 @@ namespace Dating_App.Controllers
             return BadRequest(result.Errors);
         }
 
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <param name="userForLoginDto">User which will be logged in</param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {

@@ -3,7 +3,6 @@ using Dating_App.Data;
 using Dating_App.Dtos;
 using Dating_App.Helpers;
 using Dating_App.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Dating_App.Controllers
 {
+    [Produces("application/json")]
     [ServiceFilter(typeof(LogUserActivity))]
     [Route("api/[controller]")]
     [ApiController]
@@ -26,6 +26,11 @@ namespace Dating_App.Controllers
             _repo = repo;
         }
 
+        /// <summary>
+        /// Returns a list of users, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userParams">The filters for retrieving users</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] UserParams userParams)
         {
@@ -50,6 +55,11 @@ namespace Dating_App.Controllers
             return Ok(usersToReturn);
         }
 
+        /// <summary>
+        /// Returns a user, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="id">The of the user to return</param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
@@ -62,6 +72,12 @@ namespace Dating_App.Controllers
             return Ok(userToReturn);
         }
 
+        /// <summary>
+        /// Updates a user, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="id">The id of the user to update</param>
+        /// <param name="userForUpdateDto">The user information</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto)
         {
@@ -82,6 +98,12 @@ namespace Dating_App.Controllers
             throw new Exception($"Updating user {id} failed on save");
         }
 
+        /// <summary>
+        /// Likes a user, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="id">The id of the user who sends the "Like"</param>
+        /// <param name="recipientId">The id of the user who is "Liked"</param>
+        /// <returns></returns>
         [HttpPost("{id}/like/{recipientId}")]
         public async Task<IActionResult> LikeUser(int id, int recipientId)
         {

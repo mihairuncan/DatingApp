@@ -8,12 +8,12 @@ using Dating_App.Data;
 using Dating_App.Dtos;
 using Dating_App.Helpers;
 using Dating_App.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace Dating_App.Controllers
 {
+    [Produces("application/json")]
     [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class PhotosController : ControllerBase
@@ -40,6 +40,11 @@ namespace Dating_App.Controllers
             _cloudinary = new Cloudinary(acc);
         }
 
+        /// <summary>
+        /// Returns a photo, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="id">The id of the photo to return</param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "GetPhoto")]
         public async Task<IActionResult> GetPhoto(int id)
         {
@@ -50,6 +55,12 @@ namespace Dating_App.Controllers
             return Ok(photo);
         }
 
+        /// <summary>
+        /// Adds a photo, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userId">The id of the user which will add the photo</param>
+        /// <param name="photoForCreationDto">The photo which will be added</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> AddPhotoForUser(int userId,
           [FromForm] PhotoForCreationDto photoForCreationDto)
@@ -103,6 +114,12 @@ namespace Dating_App.Controllers
             return BadRequest("Could not add the photo");
         }
 
+        /// <summary>
+        /// Sets a photo as main photo, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <param name="id">The id of the photo</param>
+        /// <returns></returns>
         [HttpPost("{id}/setMain")]
         public async Task<IActionResult> SetMainPhoto(int userId, int id)
         {
@@ -137,6 +154,12 @@ namespace Dating_App.Controllers
             return BadRequest("Could not set photo to main");
         }
 
+        /// <summary>
+        /// Deletes a photo, request must be made by a logged in user.
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <param name="id">The id of the photo</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePhoto(int userId, int id)
         {
