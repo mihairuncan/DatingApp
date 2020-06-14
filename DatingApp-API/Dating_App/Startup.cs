@@ -136,17 +136,17 @@ namespace Dating_App
                 });
             }
 
+            app.UseHttpsRedirection();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             app.UseAuthentication();
 
             app.UseRouting();
             app.UseAuthorization();
 
-            //app.UseHttpsRedirection();
-
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+         
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
             app.UseSpaStaticFiles();
 
             app.UseEndpoints(endpoints =>
