@@ -49,7 +49,7 @@ namespace Dating_App.Data
 
         public async Task<User> GetUser(int id, bool isCurrentUser)
         {
-            var query = _context.Users.Include(u => u.Photos).AsQueryable();
+            var query = _context.Users.AsQueryable();
 
             if (isCurrentUser)
             {
