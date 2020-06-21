@@ -14,10 +14,11 @@ import { TimeAgoPipe } from 'time-ago-pipe';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import {NgbModule, NgbPaginationModule, NgbDropdownModule, NgbButtonsModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
-import { AuthService } from './_services/auth.service';
+import { AuthenticationService } from './_services/auth.service';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { ErrorInterceptorProvider } from './_services/error.interceptor';
@@ -45,6 +46,35 @@ import { UserManagementComponent } from './admin/user-management/user-management
 import { PhotoManagementComponent } from './admin/photo-management/photo-management.component';
 import { AdminService } from './_services/admin.service';
 import { RolesModalComponent } from './admin/roles-modal/roles-modal.component';
+import { SocialLoginModule, AuthServiceConfig, LoginOpt } from 'angularx-social-login';
+import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
+import { SocialLoginComponent } from './social-login/social-login.component';
+import { DatePipe } from '@angular/common';
+
+// const fbLoginOptions: LoginOpt = {
+//    scope: 'public_profile,email',
+//    return_scopes: true,
+//    enable_profile_selector: true
+// }; // https://developers.facebook.com/docs/reference/javascript/FB.login/v2.11
+
+const googleLoginOptions: LoginOpt = {
+   scope: 'profile email'
+}; // https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiauth2clientconfig
+
+const config = new AuthServiceConfig([
+   {
+      id: GoogleLoginProvider.PROVIDER_ID,
+      provider: new GoogleLoginProvider('278835285382-pn8r10ucoaj1ea1hs4aqsmmlj92s75gl.apps.googleusercontent.com', googleLoginOptions)
+   },
+   // {
+   //    id: FacebookLoginProvider.PROVIDER_ID,
+   //    provider: new FacebookLoginProvider('278559849929987', fbLoginOptions)
+   // }
+]);
+
+export function provideConfig() {
+   return config;
+}
 
 export class CustomHammerConfig extends HammerGestureConfig {
    overrides = {
@@ -76,7 +106,8 @@ export function tokenGetter() {
       HasRoleDirective,
       UserManagementComponent,
       PhotoManagementComponent,
-      RolesModalComponent
+      RolesModalComponent,
+      SocialLoginComponent
    ],
    imports: [
       BrowserModule,
@@ -100,9 +131,14 @@ export function tokenGetter() {
             blacklistedRoutes: ['localhost:5000/api/auth']
          },
       }),
+      SocialLoginModule,
+      NgbModule,
+      NgbPaginationModule,
+      NgbDropdownModule,
+      NgbButtonsModule
    ],
    providers: [
-      AuthService,
+      AuthenticationService,
       ErrorInterceptorProvider,
       AlertifyService,
       AuthGuard,
@@ -114,7 +150,12 @@ export function tokenGetter() {
       ListsResolver,
       MessagesResolver,
       AdminService,
-      { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
+      { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig },
+      {
+         provide: AuthServiceConfig,
+         useFactory: provideConfig
+      },
+      DatePipe
    ],
    entryComponents: [
       RolesModalComponent

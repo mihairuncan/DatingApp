@@ -9,7 +9,7 @@ import { User } from '../_models/user';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthenticationService {
   baseUrl = environment.apiUrl + 'auth/';
   jwtHelper = new JwtHelperService();
   decodedToken: any;
@@ -25,6 +25,22 @@ export class AuthService {
 
   login(model: any) {
     return this.http.post(this.baseUrl + 'login', model)
+      .pipe(
+        map((response: any) => {
+          const user = response;
+          if (user) {
+            localStorage.setItem('token', user.token);
+            localStorage.setItem('user', JSON.stringify(user.user));
+            this.decodedToken = this.jwtHelper.decodeToken(user.token);
+            this.currentUser = user.user;
+            this.changeMemberPhoto(this.currentUser.photoUrl);
+          }
+        })
+      );
+  }
+
+  loginGoogle(idToken: string) {
+    return this.http.post(this.baseUrl + 'loginGoogle/' + idToken, {})
       .pipe(
         map((response: any) => {
           const user = response;

@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Message } from '../_models/message';
 import { Pagination, PaginatedResult } from '../_models/pagination';
 import { UserService } from '../_services/user.service';
-import { AuthService } from '../_services/auth.service';
+import { AuthenticationService } from '../_services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { AlertifyService } from '../_services/alertify.service';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-messages',
@@ -16,10 +15,11 @@ export class MessagesComponent implements OnInit {
   messages: Message[];
   pagination: Pagination;
   messageContainer = 'Unread';
+  numberOfPages = 5;
 
   constructor(
     private userService: UserService,
-    private authService: AuthService,
+    private authService: AuthenticationService,
     private route: ActivatedRoute,
     private alertify: AlertifyService
   ) { }
@@ -39,27 +39,27 @@ export class MessagesComponent implements OnInit {
       this.pagination.itemsPerPage,
       this.messageContainer)
       .subscribe((res: PaginatedResult<Message[]>) => {
-          this.messages = res.result;
-          this.pagination = res.pagination;
-        }, error => {
-          this.alertify.error(error);
-        });
+        this.messages = res.result;
+        this.pagination = res.pagination;
+      }, error => {
+        this.alertify.error(error);
+      });
   }
 
   deleteMessage(id: number) {
     this.alertify.confirm('Are you sure you want to delete this message', () => {
       this.userService.deleteMessage(id, this.authService.decodedToken.nameid).subscribe(() => {
         this.messages.splice(this.messages.findIndex(m => m.id === id), 1);
+        this.loadMessages();
         this.alertify.success('Message has been deleted');
-      }, error => {
+      }, _ => {
         this.alertify.error('Failed to delete the message');
       });
     });
   }
 
-  pageChanged(event: any): void {
-    this.pagination.currentPage = event.page;
+  pageChange(pageNumber: number): void {
+    this.pagination.currentPage = pageNumber;
     this.loadMessages();
   }
-
 }

@@ -78,7 +78,13 @@ namespace Dating_App
                        ValidateIssuer = false,
                        ValidateAudience = false
                    };
+               })
+               .AddGoogle(options =>
+               {
+                   options.ClientId = Configuration.GetSection("Google:ClientId").Value;
+                   options.ClientSecret = Configuration.GetSection("Google:ClientSecret").Value;
                });
+
 
             services.AddAuthorization(options =>
             {
@@ -124,7 +130,7 @@ namespace Dating_App
                         Email = string.Empty,
                         Url = new Uri("https://www.linkedin.com/in/mihai-runcan/"),
                     }
-                    
+
                 });
 
                 // Set the comments path for the Swagger JSON and UI.
@@ -177,7 +183,7 @@ namespace Dating_App
             app.UseRouting();
             app.UseAuthorization();
 
-         
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

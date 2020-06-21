@@ -7,6 +7,8 @@ namespace Dating_App.Dtos
 {
     public class UserForUpdateDto
     {
+        public string Gender { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string Introduction { get; set; }
         public string LookingFor { get; set; }
         public string Interests { get; set; }

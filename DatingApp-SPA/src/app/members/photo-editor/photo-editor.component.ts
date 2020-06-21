@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { Photo } from 'src/app/_models/photo';
 import { environment } from 'src/environments/environment';
-import { AuthService } from 'src/app/_services/auth.service';
+import { AuthenticationService } from 'src/app/_services/auth.service';
 import { UserService } from 'src/app/_services/user.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 
@@ -21,7 +21,7 @@ export class PhotoEditorComponent implements OnInit {
   currentMain: Photo;
 
   constructor(
-    private authService: AuthService,
+    private authService: AuthenticationService,
     private userService: UserService,
     private alertify: AlertifyService,
   ) { }

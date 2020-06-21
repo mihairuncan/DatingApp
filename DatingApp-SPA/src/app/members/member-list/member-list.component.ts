@@ -16,6 +16,7 @@ export class MemberListComponent implements OnInit {
   genderList = [{ value: 'male', display: 'Males' }, { value: 'female', display: 'Females' }];
   userParams: any = {};
   pagination: Pagination;
+  numberOfPages = 5;
 
   constructor(
     private userService: UserService,
@@ -35,8 +36,8 @@ export class MemberListComponent implements OnInit {
     this.userParams.orderBy = 'lastActive';
   }
 
-  pageChanged(event: any): void {
-    this.pagination.currentPage = event.page;
+  pageChange(pageNumber: number): void {
+    this.pagination.currentPage = pageNumber;
     this.loadUsers();
   }
 

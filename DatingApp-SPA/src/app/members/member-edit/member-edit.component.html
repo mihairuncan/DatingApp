@@ -3,11 +3,16 @@
     <div class="col-sm-4">
       <h1>Your Profile</h1>
     </div>
-    <div *ngIf="editForm.dirty" class="col-sm-8">
-      <div class="alert alert-info">
+    <div class="col-sm-8">
+      <div *ngIf="editForm.dirty" class="alert alert-info">
         <strong>Information: </strong>You have made changes. Any unsaved changes will be lost!
       </div>
+      <div *ngIf="!userDataIsValid" class="alert alert-danger">
+        <strong>Information: 
+        </strong>Please fill and save {{!editForm.value.gender && !editForm.value.dateOfBirth ? 'gender and date of birth'  : (!editForm.value.gender ? 'gender' : 'date of birth')}}
+      </div>
     </div>
+
   </div>
   <div class="row">
     <div class="col-sm-4">
@@ -41,23 +46,39 @@
         <tabset class="member-tabset">
           <tab heading="Edit Profile">
             <form #editForm="ngForm" id="editForm" (ngSubmit)='updateUser()'>
+              <h4>I am a</h4>
+              <label class="radio-inline">
+                <input class="mr-3" type="radio" value="male" [(ngModel)]="user.gender" name="gender">Male
+              </label>
+              <label class="radio-inline ml-3">
+                <input class="mr-3" type="radio" value="female" [(ngModel)]="user.gender" name="gender">Female
+              </label>
+
+              <h4>Date of Birth</h4>
+              <div class="form-group">
+                <input class="form-control" placeholder="Date of Birth" [(ngModel)]="user.dateOfBirth"
+                  name="dateOfBirth" type="text" bsDatepicker [bsConfig]="bsConfig">
+              </div>
               <h4>Description</h4>
-              <textarea name="introduction" rows="6" class="form-control" [(ngModel)]="user.introduction"></textarea>
+              <textarea name="introduction" rows="6" class="form-control" [(ngModel)]="user.introduction"
+                required></textarea>
               <h4>Looking for</h4>
-              <textarea name="lookingFor" rows="6" class="form-control" [(ngModel)]="user.lookingFor"></textarea>
+              <textarea name="lookingFor" rows="6" class="form-control" [(ngModel)]="user.lookingFor"
+                required></textarea>
               <h4>Interests</h4>
-              <textarea name="interests" rows="6" class="form-control" [(ngModel)]="user.interests"></textarea>
+              <textarea name="interests" rows="6" class="form-control" [(ngModel)]="user.interests" required></textarea>
               <h4>Location Details</h4>
               <div class="form-inline">
                 <label class="mr-1" for="city">City</label>
-                <input name="city" type="text" class="form-control" [(ngModel)]="user.city">
+                <input name="city" type="text" class="form-control" [(ngModel)]="user.city" required>
                 <label class="mr-1" for="country">Country</label>
-                <input name="country" type="text" class="form-control" [(ngModel)]="user.country">
+                <input name="country" type="text" class="form-control" [(ngModel)]="user.country" required>
               </div>
             </form>
           </tab>
           <tab heading="Edit Photos">
-            <app-photo-editor [photos]="user.photos" (getMemberPhotoChange)="updateMainPhoto($event)"></app-photo-editor>
+            <app-photo-editor [photos]="user.photos" (getMemberPhotoChange)="updateMainPhoto($event)">
+            </app-photo-editor>
           </tab>
         </tabset>
       </div>

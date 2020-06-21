@@ -81,6 +81,11 @@ namespace Dating_App.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto)
         {
+            if (userForUpdateDto.DateOfBirth.CalculateAge() < 18)
+            {
+                return BadRequest("You must have at least 18 years old!");
+            }
+
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             {
                 return Unauthorized();
