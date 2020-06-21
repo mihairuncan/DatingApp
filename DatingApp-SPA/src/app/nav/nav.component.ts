@@ -14,7 +14,7 @@ export class NavComponent implements OnInit {
   photoUrl: string;
 
   constructor(
-    private authService: AuthenticationService,
+    public authService: AuthenticationService,
     private socialAuthService: AuthService,
     private alertify: AlertifyService,
     private router: Router) { }

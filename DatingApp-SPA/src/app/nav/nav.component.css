@@ -8,3 +8,7 @@ img {
     border-radius: 50%;
     vertical-align: middle;  
 }
+
+.dropdown-menu {
+    left: 100px !important;
+}

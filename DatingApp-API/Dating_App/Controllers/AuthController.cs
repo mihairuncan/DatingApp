@@ -47,7 +47,7 @@ namespace Dating_App.Controllers
         {
             if(userForRegisterDto.DateOfBirth.CalculateAge() < 18)
             {
-                return BadRequest("You must have at least 18 years old!");
+                return BadRequest("You should have at least 18 years old!");
             }
 
             var userToCreate = _mapper.Map<User>(userForRegisterDto);
